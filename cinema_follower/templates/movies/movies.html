@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema Follower</title>
+  <link rel="stylesheet" href="../static/tailwind.css">
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+  {% set active_page = "main.movies" %}
+  <header>
+    {% include "_navbar.html" %}
+  </header>
+  <div class="relative flex p-4 mt-4 w-full justify-center">
+    <div class="absolute top-0 left-0 flex w-1/4 p-4 justify-center">
+      <form class="border rounded-lg border-gray-200 bg-slate-50 shadow-sm">
+        <div x-data="{
+        hideUnreleased: false,
+        sortBy: 'name',
+        descending: false,
+        selectedGenres: [],
+        minRating: '',
+        applyFilters() {
+            // your filtering logic here
+            console.log({
+                hideUnreleased: this.hideUnreleased,
+                sortBy: this.sortBy,
+                descending: this.descending,
+                selectedGenres: this.selectedGenres,
+                minRating: this.minRating
+            });
+        }
+    }" class="flex flex-wrap flex-col gap-4 p-4 h-min">
+
+          <!-- Hide unreleased -->
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" x-model="hideUnreleased"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+            <span class="text-sm font-medium text-gray-700">Hide unreleased</span>
+          </label>
+
+          <!-- Sorting select + Descending -->
+          <div class="flex items-center space-x-2">
+            <label for="sort" class="text-sm font-medium text-gray-700">Sorting</label>
+            <select id="sort" x-model="sortBy"
+              class="rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500">
+              <option value="name">Name</option>
+              <option value="theatrical">Theatrical release</option>
+              <option value="digital">Digital release</option>
+            </select>
+
+            <button @click="descending = !descending" :class="descending
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-gray-700 border-gray-300'"
+              class="border rounded-md px-3 py-1 text-sm font-medium transition-colors" title="Toggle descending order">
+              <svg xmlns="http://www.w3.org/2000/svg" :class="descending ? 'rotate-180' : ''"
+                class="w-4 h-4 inline-block transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Genres select -->
+          <div class="flex space-x-2">
+            <label for="genres" class="text-sm font-medium text-gray-700">Genres</label>
+            <select id="genres" multiple x-model="selectedGenres"
+              class="rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500 min-w-[10rem]">
+              <option value="comedy">Comedy</option>
+              <option value="drama">Drama</option>
+              <option value="horror">Horror</option>
+            </select>
+          </div>
+
+          <!-- Rating filter -->
+          <div class="flex space-x-2">
+            <label for="rating" class="text-sm font-medium text-gray-700">Rating &gt;</label>
+            <input id="rating" type="number" step="0.1" min="0" max="10" x-model="minRating"
+              class="rounded-md border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500 w-24">
+          </div>
+
+          <!-- Apply button -->
+          <button @click="applyFilters()"
+            class="ml-auto px-4 py-2 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition">
+            Apply
+          </button>
+
+        </div>
+      </form>
+    </div>
+
+    <ul class="basis-1/2 space-y-3" id="movie-list">
+      {% for movie in movie_list %}
+      {% include "movies/_movie_card.html" %}
+      {% endfor %}
+    </ul>
+
+    <div class="w"></div>
+  </div>
+
+  <div id="loader" class="justify-self-center mb-5">none</div>
+
+  <script>
+    let page = {{ page }};
+    let loading = false;
+    const loader = document.getElementById("loader");
+
+    // load next page
+    async function loadMore() {
+      if (loading) return;
+      loading = true;
+      loader.textContent = "..."
+      loader.style.display = "block";
+
+      // await new Promise(r => setTimeout(r, 2000));
+
+      const res = await fetch(`/movies/load?page=${++page}`);
+      const html = await res.text();
+
+      if (html.trim() === "") {
+        loader.textContent = "the end";
+        loader.style.justifySelf = "center"
+        loader.style.marginBottom = "10px"
+        window.removeEventListener("scroll", handleScroll);
+        return;
+      }
+
+      document.getElementById("movie-list")
+        .insertAdjacentHTML("beforeend", html);
+
+      loading = false;
+      loader.style.display = "none";
+    }
+
+    // check if near bottom
+    function handleScroll() {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      if (scrollTop + clientHeight >= scrollHeight - 200) {
+        loadMore();
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+  </script>
+
+</body>
+
+</html>

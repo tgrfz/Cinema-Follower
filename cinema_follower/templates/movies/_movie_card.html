@@ -1,0 +1,81 @@
+<article class="p-4 space-x-4 items-start flex shadow-md rounded-lg border-t-2 border-t-slate-50">
+    <img src={{ movie.poster }} loading="lazy" decoding="async" alt="" width="120"
+        class="flex-none rounded-md bg-slate-100">
+    <!-- TODO letterboxd link -->
+
+    <div class="min-w-0 relative flex-auto">
+        <dl class="w-5/6">
+            <a href={{ movie.url }}>
+                <span class="sr-only">Movie name</span>
+                <h2 class="text-xl font-semibold text-ellipsis">{{ movie.name }}</h2>
+            </a>
+            <dl class="mt-2 flex flex-wrap text-base leading-6 font-medium">
+                <div class="hidden absolute top-0 right-0 sm:flex items-center space-x-1">
+                    <dt>
+                        <span class="sr-only">Star rating</span>
+                        <svg width="16" height="20" fill={{ movie.star_color }}>
+                            <path
+                                d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z">
+                            </path>
+                        </svg>
+                    </dt>
+                    <dd>{{ movie.vote_average }}</dd>
+                </div>
+            </dl>
+        </dl>
+
+        <dl class="text-sm leading-6 font-medium">
+            <div class="flex flex-wrap text-gray-400">
+                <div class="mr-2">
+                    <dt class="sr-only">Release date</dt>
+                    <dd>{{ movie.release_date }}</dd>
+                </div>
+                <div class="mr-2">
+                    <dt class="sr-only">Digital release</dt>
+                    {% if movie.is_dig_released %}
+                    <dd title="{{ movie.digital_release }}">✅</dd>
+                    {% elif movie.digital_release %}
+                    <dd>
+                        ❌ {{ movie.digital_release }}
+                    </dd>
+                    {% else %}
+                    <dd>❌</dd>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="font-normal w-full mt-2 text-base">
+                <dt class="sr-only">Overview</dt>
+                <dd>{{ movie.overview }}</dd>
+            </div>
+
+            <!-- <div class="flex flex-wrap w-full mt-2">
+                <dt class="sr-only">Crew</dt>
+                {% for person in movie.crew %}
+                <dd class="flex items-center">
+                    <a href={{ person.url }} class="with-tooltip relative"
+                        style="color: {{ person.highlight_color }}">{{ person.info }}<span class="tooltip-text">{{
+                            person.info.job }}</span></a>
+                    <svg width="2" height="2" fill="currentColor" class="mx-2 text-slate-300" aria-hidden="true">
+                        <circle cx="1" cy="1" r="1"></circle>
+                    </svg>
+                </dd>
+                {% endfor %}
+            </div>
+
+            <div class="flex flex-wrap w-full mt-2">
+                <dt class="sr-only">Cast</dt>
+                {% for person in movie.cast %}
+                <dd class="flex items-center">
+                    <a href={{ person.url }} class="with-tooltip relative"
+                        style="color: {{ person.highlight_color }}">{{ person.info }}<span class="tooltip-text">{{
+                            person.info.order + 1 }}.&nbsp{{ person.info.character }}</span></a>
+                    <svg width="2" height="2" fill="currentColor" class="mx-2 text-slate-300" aria-hidden="true">
+                        <circle cx="1" cy="1" r="1"></circle>
+                    </svg>
+                </dd>
+                {% endfor %}
+            </div> -->
+        </dl>
+    </div>
+</article>

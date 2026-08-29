@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Follower</title>
+    <link rel="stylesheet" href="../static/tailwind.css">
+    <link rel="stylesheet" href="../static/style.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body>
+    {% set active_page = "main.people" %}
+    <header>
+        {% include "_navbar.html" %}
+    </header>
+    <div>
+        <form method="POST" action="{{ url_for('main.people_add') }}">
+            <label>Follow</label>
+            <input type="text" name="add_person_id" placeholder="person id" required>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    <div
+        class="m-4 grid font-medium text-base" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        {% for follow in follows %}
+        <div class="flex flex-wrap group m-2 rounded-lg w-40 shadow-md content-start">
+            <div class="relative h-60">
+                <a href={{ follow.person.url }}><img src={{ follow.person.photo }} loading="lazy" decoding="async"
+                        class="rounded-t-md bg-slate-100 group-hover:opacity-90 w-40 h-60"></a>
+                <div class="absolute -bottom-9 right-0" x-data="{ open: false }">
+                    <button type="button" class="inline-flex w-full justify-center text-slate-600 hover:bg-gray-200" id="person-options-btn"
+                    @click="open = ! open">
+                        <span class="sr-only">Person menu</span>
+                        <svg width="20" height="20" fill="currentColor" data-slot="icon">
+                            <path
+                                d="M10 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM10 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM11.5 15.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="absolute  right-5 -bottom-8 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none" id="person-options"
+                        role="menu" x-show="open" @click.outside="open = false" tabindex="-1">
+                        <div class="py-1" role="none">
+                            <!-- Active: "bg-gray-100 text-gray-900 outline-none", Not Active: "text-gray-700" -->
+                            <form method="POST" action="{{ url_for('main.people_remove', id=follow.person.id) }}" role="none">
+                                <button type="submit" class="block w-full px-3 py-1 text-left text-sm text-gray-700"
+                                    role="menuitem" tabindex="-1" id="menu-item-1">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <a href={{ follow.person.url }} class="m-3 max-w-32 leading-5">{{ follow.person.name}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

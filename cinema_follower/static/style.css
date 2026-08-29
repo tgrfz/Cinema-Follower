@@ -1,0 +1,73 @@
+:root {
+  --tooltip_background: #000000ae;
+}
+
+.with-tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: var(--tooltip_background);
+  color: #fff;
+  text-align: center;
+  padding: 3px;
+  border-radius: 6px;
+  line-height: normal;
+
+  position: absolute;
+  z-index: 1;
+
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.with-tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+.with-tooltip .tooltip-text::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--tooltip_background) transparent transparent transparent;
+}
+
+.btn-google {
+    padding: 10px 25px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 0.5rem;
+    border: 1px solid #bebebe;
+    gap: 10px;
+    color: #414141;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-google svg {
+    height: 24px;
+}
+
+.btn-google:hover {
+    border: solid 1px #464545;
+}
+
+.btn-google:disabled {
+    pointer-events: none;
+    opacity: .65;
+    color: #7e7e7e;
+    background: #dcdcdc;
+    box-shadow: none;
+    text-shadow: none;
+}
